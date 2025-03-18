@@ -1,0 +1,44 @@
+#include <GLFW/glfw3.h>
+#include <math.h>
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+#define BALL_RADIUS 0.1  // OpenGL uses normalized coordinates (-1 to 1)
+
+void draw_circle(float cx, float cy, float r, int num_segments) {
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(cx, cy);
+    for (int i = 0; i <= num_segments; i++) {
+        float theta = 2.0f * M_PI * (float)i / (float)num_segments;
+        float x = r * cosf(theta);
+        float y = r * sinf(theta);
+        glVertex2f(x + cx, y + cy);
+    }
+    glEnd();
+}
+
+int main() {
+    if (!glfwInit()) return -1;
+
+    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Red Ball", NULL, NULL);
+    if (!window) {
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    while (!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glColor3f(1.0f, 0.0f, 0.0f); // Red color
+        draw_circle(0.0f, 0.0f, BALL_RADIUS, 50); // Center of screen
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
+}
